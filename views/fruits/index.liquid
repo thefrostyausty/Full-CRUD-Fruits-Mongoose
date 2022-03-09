@@ -4,19 +4,28 @@ so we need to inform all our blocks files -->
 <!-- here we start our block content -->
 {% block content %}
     <div>
+        <a href="/fruits/new">Create a New Fruit</a>
         {% for fruit in fruits %}
-            <article>
-                <a href="/fruits/{{ fruit.id }}">
-                    <h2>
-                        {{ fruit.name }}
-                        {% if fruit.readyToEat %}
-                            Ripe
-                        {% else %}
-                            Not Ripe
-                        {% endif %}
-                    </h2>
-                </a>
-            </article>
+                <div class="card" style="width: 18rem;">
+                    <!-- card header name of fruit
+                    card body ready to eat as title color as text -->
+                <h5 class="card-header">{{ fruit.name }}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">
+                </div>
+                <h2>
+                    {% if fruit.readyToEat %}
+                    Ripe
+                    {% else %}
+                    Not Ripe
+                    {% endif %}
+                </h5>
+                <p class="class card text">
+                    The color of this {{ fruit.name }} is {{fruit.color }}
+                </p>
+            </div>
+            <a href="/fruits/{{ fruit.id }}" class="btn btn-info"></a>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

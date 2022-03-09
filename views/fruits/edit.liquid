@@ -1,0 +1,41 @@
+{% layout 'layout.liquid'%}
+{% block content %}
+    <div>
+        <form action="/fruits/{{ fruit.id }}/?_method=PUT" method="POST">
+            <fieldset>
+                <legend>EDIT NEW FRUIT</legend>
+                <label> 
+                    Name: 
+                    <input 
+                        type="text" 
+                        name="name"
+                        placeholder="enter fruit name"
+                        value={{ fruit.name }}
+                        >
+                </label>
+                <label> 
+                    Color: 
+                    <input 
+                        type="text" 
+                        name="color"
+                        placeholder="enter color name"
+                        value={{ fruit.color }}
+                        >
+                </label>
+                <label>
+                    Ready To Eat:
+                    <input 
+                        type="checkbox" 
+                        name="readyToEat"
+                        {% if fruit.readyToEat %}
+                            checked
+                        {% endif %}
+                        >
+                </label>
+            </fieldset>
+            <input 
+                type="submit" 
+                value="EDIT THIS {{ fruit.name }}">
+        </form>
+    </div>
+{% endblock %}

@@ -55,7 +55,7 @@ app.get('/fruits', (req, res) => {
     Fruit.find({})
     // then render a template after found
         .then(fruits => {
-            console.log(fruits)
+            // console.log(fruits)
             res.render('fruits/index', { fruits })
         })        
     // show an errro if there is one
@@ -71,6 +71,58 @@ app.get('/fruits/new', (req, res) =>{
 })
 
 // create route POST route that calls the dn and makes a new document
+app.post('/fruits', (req, res) =>{
+    // check if the readyto eat propterry should be true
+    // we can check AND set this property in one line of code
+    // first part sets the property name
+    // second is a ternary to set the form
+    req.body.readyToEat = req.body.readyToEat === 'on' ? true : false
+    // console.log('this is the ruit to create', req.body)
+    // now we're ready for mongoose to do its thing
+    Fruit.create(req.body)
+        .then(data => {
+            // console.log('this was returned from create', data)
+            res.redirect('/fruits')
+        })
+        .catch(error => {
+            console.log(error)
+            res.json({ error })
+        })
+})
+
+// we need edit route GET that takes up to the edit form view
+app.get('/fruits/:id/edit', (req, res) => {
+    // wee need to get the id
+    const fruitId = req.params.id
+    // find the fruite
+    Fruit.findById(fruitId)
+    // ...render if there is a frits
+        .then(fruit =>{
+            res.render('fruits/edit', { fruit })
+        })
+    // error if tis si no fruit
+        .catch(error =>{
+            console.log(error)
+            res.json(error)
+        })
+})
+// update route sends a PUT request to our database
+app.put('/fruits/:id', (req, res) => {
+    // get the id
+    const fruitId = req.params.id
+    // check and assign the ready to eat property to the correct value
+    req.body.readyToEat = req.body.readyToEat === 'on' ? true : false
+    // tell mongoose to update the fruit
+    Fruit.findByIdAndUpdate(fruitId, req.body, { new: true })
+    // if successful redirect
+        .then(fruit => {
+            console.log('the updated fruits', fruit)
+            res.redirect(`/fruits/${ fruit.id }`)
+        })
+    // if an error display that
+        .catch(error => res.json(error))
+})
+
 
 // show route
 app.get('/fruits/:id', (req, res) => {
@@ -84,6 +136,21 @@ app.get('/fruits/:id', (req, res) => {
         })
 // if theres an error show that as well
         .catch(error  =>{
+            console.log(error)
+            res.json({ error })
+        })
+})
+// the delete route
+app.delete('/fruits/:id', (req, res)=> {
+    // get the fruit id
+    const fruitID = req.params.id
+    // delete the fruit
+    Fruit.findByIdAndRemove(fruitID)
+        .then(fruit => {
+            console.log('this is the response from FBID', fruit)
+            res.redirect('/fruits')
+        })
+        .catch(error =>{
             console.log(error)
             res.json({ error })
         })
