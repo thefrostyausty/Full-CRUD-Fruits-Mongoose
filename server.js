@@ -1,40 +1,46 @@
-// import our dependencies first
-// allows us to load our env variables
+/////////////////////////////////
+// import dependencies
+/////////////////////////////////
+// this allows us to load our env variables
 require('dotenv').config()
 const express = require('express')
-const morgan = require('morgan')
-const methodOverride = require('method-override')
-// import the fruits model when we have it
-// no longer need this reference it lives in fruit controler
+// We no longer need this reference because it lives in the fruit controller now
 // const Fruit = require('./models/fruit')
-// now that were using controllers as they should
-// we need to require our router
+// now that we're using controllers as they should be used
+// we need to require our routers
 const FruitRouter = require('./controllers/fruit')
-// create our express application object
+const UserRouter = require('./controllers/user')
+const HomeRouter = require('./controllers/home')
+const middleware = require('./utils/middleware')
+
+////////////////////////////////////////////
+// Create our express application object
+////////////////////////////////////////////
 const app = require('liquid-express-views')(express())
 
-// middleware.........................
-// this is for request logging
-app.use(morgan('tiny'))
-app.use(methodOverride('_method'))
-// parses urlendcoded request bodies
-app.use(express.urlencoded({extended: false}))
-// to serve files from public statically 
-app.use(express.static('public'))
+////////////////////////////////////////////
+// Middleware
+////////////////////////////////////////////
+middleware(app)
 
-// where the routes are......................
-// send all '/fruits' routes to the fruit router
+////////////////////////////////////////////
+// Routes
+////////////////////////////////////////////
+// send all '/fruits' routes to the Fruit Router
 app.use('/fruits', FruitRouter)
+app.use('/user', UserRouter)
+app.use('/', HomeRouter)
+
+// old home, now we're using homerouter
+// app.get('/', (req, res) => {
+//     res.send('your server is running, better go catch it')
+// })
 
 
-app.get('/', (req, res) =>{
-    console.log('this si fruit model', Fruit)
-    res.send('the server is runner better go catch it')
-})
-
-
-// server listener ..................
+////////////////////////////////////////////
+// Server Listener
+////////////////////////////////////////////
 const PORT = process.env.PORT
-app.listen(PORT, () =>{
-    console.log(`app is lsitening on port: ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`app is listening on port: ${PORT}`)
 })
