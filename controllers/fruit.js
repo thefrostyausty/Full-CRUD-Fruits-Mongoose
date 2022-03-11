@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
 // index that shows only the user's fruits
 router.get('/mine', (req, res) => {
 	// find the fruits
-	Fruit.find({ username: req.session.username })
+	Fruit.find({ owner: req.session.userId })
 		// then render a template AFTER they're found
 		.then((fruits) => {
 			// console.log(fruits)
@@ -83,7 +83,12 @@ router.post('/', (req, res) => {
 	// console.log('this is the fruit to create', req.body)
 	// now we're ready for mongoose to do its thing
 	// now that we have user specific fruits, we'll add the username to the fruit created
-	req.body.username = req.session.username
+	// req.body.username = req.session.username
+	// instead of a username we're now using a reference
+	// and since we stored the id of the user in the session object
+	// we can use it to set the owner property
+	// of the fruit upon creation
+	req.body.owner = req.session.userId
 	Fruit.create(req.body)
 		.then((fruit) => {
 			console.log('this was returned from create', fruit)
@@ -143,8 +148,9 @@ router.get('/:id', (req, res) => {
 		.then((fruit) => {
 			const username = req.session.username
 			const loggedIn = req.session.loggedIn
+			const userId = req.session.userId
 
-			res.render('fruits/show', { fruit, username, loggedIn })
+			res.render('fruits/show', { fruit, username, loggedIn, userId })
 		})
 		// if there is an error, show that instead
 		.catch((err) => {
